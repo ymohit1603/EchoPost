@@ -5,7 +5,6 @@ import * as THREE from 'three';
 import { Canvas, useFrame, ThreeElements } from '@react-three/fiber';
 import { Text, OrbitControls } from '@react-three/drei';
 
-// Define types for our components and props
 type AnimatedTextProps = {
   children: string;
   position: [number, number, number];
@@ -16,7 +15,6 @@ type FeatureProps = {
   description: string;
 };
 
-// 3D Text component
 const AnimatedText: React.FC<AnimatedTextProps & ThreeElements['text']> = ({ children, ...props }) => {
   const ref = useRef<THREE.Mesh>(null);
   useFrame(({ clock }) => {
@@ -32,7 +30,7 @@ const AnimatedText: React.FC<AnimatedTextProps & ThreeElements['text']> = ({ chi
   );
 };
 
-// Animated background component
+t
 const AnimatedBackground: React.FC = () => {
   const mesh = useRef<THREE.Mesh>(null);
   useFrame(() => {
@@ -164,7 +162,7 @@ const LandingPage: React.FC = () => {
           </motion.div>
         </main>
 
-        {/* 3D Text */}
+    
         <div className="h-96 my-16">
           <Canvas>
             <ambientLight intensity={0.5} />
