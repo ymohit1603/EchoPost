@@ -23,7 +23,7 @@ const NavBar = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-             <Link to={"/"}> BlogVerse</Link>
+             <Link to={"/"}> EchoPost</Link>
             </motion.h1>
             <motion.div 
               className="space-x-6"

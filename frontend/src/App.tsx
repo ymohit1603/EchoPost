@@ -7,6 +7,7 @@ import  Blogs  from './pages/Blogs';
 import Publish  from './pages/Publish';
 import LandingPage from './pages/Home';
 import ContactUs from './pages/Contact';
+import AboutUs from './pages/About';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/blogs" element={<Blogs />} />
         <Route path='/publish' element={<Publish />}></Route>
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/about" element={<AboutUs />} />
         </Routes>
       </BrowserRouter>
   )

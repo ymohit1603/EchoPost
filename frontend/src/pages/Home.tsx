@@ -106,7 +106,7 @@ const LandingPage: React.FC = () => {
             animate="visible"
             variants={fadeIn}
           >
-            <h2 className="text-6xl font-bold mb-4">Welcome to BlogVerse</h2>
+            <h2 className="text-6xl font-bold mb-4">Welcome to EchoPost</h2>
             <p className="text-2xl text-gray-300 mb-8">Discover, Create, and Share Amazing Stories</p>
             <div className="flex justify-center gap-5">
             <motion.button
@@ -158,15 +158,15 @@ const LandingPage: React.FC = () => {
           <Canvas>
             <ambientLight intensity={0.5} />
             <pointLight position={[10, 10, 10]} />
-            <AnimatedText position={[-3.5, 0, 0]}>Blog</AnimatedText>
-            <AnimatedText position={[3.5, 0, 0]}>Verse</AnimatedText>
+            <AnimatedText position={[-3.5, 0, 0]}>Echo</AnimatedText>
+            <AnimatedText position={[3.5, 0, 0]}>Post</AnimatedText>
             <OrbitControls enableZoom={false} />
           </Canvas>
         </div>
 
         <animated.footer style={springProps} className="bg-purple-900 text-white py-8 mt-16">
           <div className="container mx-auto px-4 text-center">
-            <p>&copy; 2024 BlogVerse. All rights reserved.</p>
+            <p>&copy; 2024 EchoPost. All rights reserved.</p>
           </div>
         </animated.footer>
       </div>
