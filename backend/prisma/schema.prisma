@@ -14,18 +14,55 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  name     String?
-  password String
-  posts    Blog[]
+  id        String     @id @default(uuid())
+  email     String     @unique
+  name      String
+  password  String
+  posts     Blog[]
+  comments  Comment[]
+  bookmarks Bookmark[]
+  likes     Like[]
 }
 
 model Blog {
-  id          String @id @default(uuid())
-  title       String
-  content     String
-  published   Boolean @default(false)
-  author      User @relation(fields: [authorId],references: [id])
-  authorId    String
+  id        String     @id @default(uuid())
+  title     String
+  content   String
+  published Boolean    @default(false)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  author    User       @relation(fields: [authorId], references: [id])
+  authorId  String
+  comments  Comment[]
+  bookmarks Bookmark[]
+  likes     Like[]
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  content    String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  blogPost   Blog     @relation(fields: [blogPostId], references: [id])
+  blogPostId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Bookmark {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  blogPost   Blog     @relation(fields: [blogPostId], references: [id])
+  blogPostId String
+  createdAt  DateTime @default(now())
+}
+
+model Like {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  blogPost   Blog     @relation(fields: [blogPostId], references: [id])
+  blogPostId String
+  createdAt  DateTime @default(now())
 }
