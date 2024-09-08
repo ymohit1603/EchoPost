@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Editor } from '@tinymce/tinymce-react';
-import { Chip, TextField, Button, Typography, ThemeProvider, createTheme } from '@mui/material';
+import { Chip, TextField, Button, Typography, ThemeProvider, createTheme, Alert } from '@mui/material';
 import { styled } from '@mui/system';
 import NavBar from '../components/NavBar';
+import PublishBlog from '../hooks/publishBlog';
 
-type BlogPost = {
+export type BlogPostType = {
   title: string;
   content: string;
   tags: string[];
@@ -21,7 +22,7 @@ const PublishButton = styled(Button)(({ theme }) => ({
 }));
 
 const Publish: React.FunctionComponent = () => {
-  const [post, setPost] = useState<BlogPost>({
+  const [post, setPost] = useState<BlogPostType>({
     title: '',
     content: '',
     tags: [],
@@ -52,14 +53,21 @@ const Publish: React.FunctionComponent = () => {
   const handleRemoveTag = (tagToRemove: string) => {
     setPost({ ...post, tags: post.tags.filter((tag) => tag !== tagToRemove) });
   };
-
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (post.title.trim() === '' || post.content.trim() === '') {
       alert('Please fill in the title and content before publishing.');
       return;
     }
+  
     console.log('Publishing post:', post);
-    alert('Post published successfully!');
+  
+    try {
+      await PublishBlog(post); 
+      <Alert severity='success'>Post published successfully!</Alert>
+    } catch (error) {
+      console.error('Error posting blog:', error);
+      <Alert severity='error'>Failed to publish the post. Please try again later.</Alert>
+    }
   };
 
   return (
