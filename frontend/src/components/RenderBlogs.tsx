@@ -4,7 +4,7 @@ import NavBar from './NavBar';
 import fetchAllBlogs from '../hooks/fetchAllBlogs';
 
 // Mock data
-const tags = ['Technology', 'Design', 'Programming', 'AI', 'Web Development', 'Data Science', 'UX/UI', 'Mobile Dev'];
+// const tags = ['Technology', 'Design', 'Programming', 'AI', 'Web Development', 'Data Science', 'UX/UI', 'Mobile Dev'];
 // const blogPosts = [
 //   { id: 1, title: 'Getting Started with React', excerpt: 'Learn the basics of React and start building your first app...', author: 'Jane Doe', date: '2024-09-01', readTime: '5 min read', tags: ['React', 'JavaScript'], likes: 120, comments: 15 },
 //   { id: 2, title: 'The Future of AI', excerpt: 'Exploring the potential impacts of artificial intelligence on various industries...', author: 'John Smith', date: '2024-08-28', readTime: '8 min read', tags: ['AI', 'Technology'], likes: 89, comments: 23 },
@@ -21,7 +21,7 @@ interface blogPostTypes{
   author: string,
   date: string,
   readTime: string,
-  tags: 'Technology' | 'Design' | 'AI' | 'Web Development' | 'Data Science' | 'UI/UX',
+  tag: string,
   likes: number,
   comments:string[],
 }
@@ -36,7 +36,7 @@ const BlogPage = () => {
     if (blogPosts) {
       const filtered = blogPosts.filter(post => 
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedTag === '' || post.tags.includes(selectedTag))
+        (selectedTag === '' || post.tag.includes(selectedTag))
       );
       setFilteredPosts(filtered);
       
@@ -75,17 +75,17 @@ const BlogPage = () => {
             <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           </div>
           <div className="flex flex-wrap gap-2">
-            {tags.map((tag) => (
+            {blogPosts&&blogPosts.map((val:blogPostTypes) => (
               <button
-                key={tag}
+                key={val.tag}
                 className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                  selectedTag === tag 
+                  selectedTag === val.tag 
                     ? 'bg-blue-500 text-white' 
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
-                onClick={() => setSelectedTag(tag === selectedTag ? '' : tag)}
+                onClick={() => setSelectedTag(val.tag === selectedTag ? '' : val.tag)}
               >
-                {tag}
+                {val.tag}
               </button>
             ))}
           </div>
