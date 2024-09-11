@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const fetchAllBlogs = async () => {
     try {
       const response = await axios.get('/api/v1/book/');

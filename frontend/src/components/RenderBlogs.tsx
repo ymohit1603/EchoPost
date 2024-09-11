@@ -2,6 +2,7 @@ import  { useState, useEffect } from 'react';
 import { Search, ChevronDown, Heart, MessageSquare, Bookmark } from 'lucide-react';
 import NavBar from './NavBar';
 import fetchAllBlogs from '../hooks/fetchAllBlogs';
+import { useNavigate } from 'react-router-dom';
 
 // Mock data
 // const tags = ['Technology', 'Design', 'Programming', 'AI', 'Web Development', 'Data Science', 'UX/UI', 'Mobile Dev'];
@@ -26,9 +27,9 @@ interface blogPostTypes{
 const BlogPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
-  const [blogPosts, setBlogPosts] = useState<blogPostTypes[]>();
+  const [blogPosts, setBlogPosts] = useState<blogPostTypes[]>([]);
   const [filteredPosts, setFilteredPosts] = useState(blogPosts);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (blogPosts) {
       const filtered = blogPosts.filter(post => 
@@ -44,7 +45,11 @@ const BlogPage = () => {
     const fetchPosts = async () => {
       try {
         const posts = await fetchAllBlogs(); 
-        setBlogPosts(posts); 
+        if (posts.redirectUrl) {
+          navigate(posts.redirectUrl);
+          return;
+        }
+        setBlogPosts(posts.blogs); 
       } catch (error) {
         console.error("Failed to fetch blog posts", error);
       }

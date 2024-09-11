@@ -37,7 +37,7 @@ bookRouter.use("/*",async (c,next)=>{
       const response=await verify(header,c.env.JWT_SECRET);
       if(!response){
         c.status(403);
-        return c.json({error:"unauthorized"})
+        return c.json({error:"unauthorized",redirectUrl:'/signin'})
       }
       else{
         c.set("userId",response.id)
