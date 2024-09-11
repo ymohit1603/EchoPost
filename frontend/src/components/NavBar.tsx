@@ -10,7 +10,7 @@ const NavBar = () => {
       
       const navItems: NavItem[] = [
         { label: 'Home', link: '/' },
-        { label: 'About', link: '/about' },
+        { label: 'About us', link: '/about' },
         { label: 'Contact', link: '/contact' },
       ];
     return (

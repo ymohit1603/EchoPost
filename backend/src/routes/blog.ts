@@ -74,7 +74,8 @@ bookRouter.post('/',async (c) => {
         data:{
             title:body.title,
             content:body.content,
-            authorId:authorId
+            authorId: authorId,
+            tag:body.tag
         }
    })
    return c.json({
@@ -105,7 +106,8 @@ bookRouter.put('/',async (c)=>{
         data:{
             title:body.title,
             content:body.content,
-            authorId:authorId
+            authorId: authorId,
+            tag:body.tag,
                 }
    })
    return c.json({
@@ -119,20 +121,53 @@ bookRouter.get('/:id',async (c)=>{
     datasourceUrl:c.env.DATABASE_URL
    }).$extends(withAccelerate())
 
-
    try{
        const blog= await prisma.blog.findFirst({
-           where:{
-               id:body.id
-         },
+        where: {
+          id: body.id
+        },
          select: {
-           id:true,
+           id: true,
            title: true,
            content: true,
+           createdAt: true,
+           tag: true,
            author: {
-             select: {   
-               name:true
-              }
+             select: {
+               name: true 
+             }
+           },
+           comments: {
+             select: {
+               id: true,
+               content: true,
+               createdAt: true,
+               user: {
+                 select: {
+                   name: true 
+                 }
+               }
+             }
+           },
+           likes: {
+             select: {
+               id: true,
+               user: {
+                 select: {
+                   name: true
+                 }
+               }
+             }
+           },
+           bookmarks: {
+             select: {
+               id: true,
+               user: {
+                 select: {
+                   name: true 
+                 }
+               }
+             }
            }
          }
          
@@ -167,7 +202,28 @@ bookRouter.get('/:id',async (c)=>{
           select: {
             name:true
           }
-        }
+        },
+        tag: true,
+        createdAt: true,
+        comments: {
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            user: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+        _count: {
+          select: {
+            likes: true, 
+            comments:true,
+          }
+        }  
+        
      }
    });
    return c.json({

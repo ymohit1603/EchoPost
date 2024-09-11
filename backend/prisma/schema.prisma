@@ -36,6 +36,7 @@ model Blog {
   comments  Comment[]
   bookmarks Bookmark[]
   likes     Like[]
+  tag       String
 }
 
 model Comment {

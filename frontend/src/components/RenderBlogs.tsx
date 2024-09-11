@@ -12,18 +12,15 @@ import fetchAllBlogs from '../hooks/fetchAllBlogs';
 //   { id: 4, title: 'The Rise of No-Code Platforms', excerpt: 'Discover how no-code platforms are democratizing software development...', author: 'Alex Johnson', date: '2024-08-22', readTime: '7 min read', tags: ['No-Code', 'Technology'], likes: 72, comments: 11 },
 // ];
 
-
-
 interface blogPostTypes{
   id: string,
   title: string,
   content: string,
   author: string,
-  date: string,
-  readTime: string,
+  createdAt: string,
   tag: string,
-  likes: number,
-  comments:string[],
+  _count:{likes: number,
+    comment:number,}
 }
 
 const BlogPage = () => {
@@ -101,9 +98,7 @@ const BlogPage = () => {
             <div className="flex items-center text-sm text-gray-500">
               <span>{filteredPosts[0].author}</span>
               <span className="mx-2">•</span>
-              <span>{filteredPosts[0].date}</span>
-              <span className="mx-2">•</span>
-              <span>{filteredPosts[0].readTime}</span>
+              <span>{filteredPosts[0].createdAt}</span>
             </div>
           </div>
         )}
@@ -117,10 +112,10 @@ const BlogPage = () => {
               <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-500 transition-colors">{post.title}</h3>
               <p className="text-gray-600 mb-4 line-clamp-3">{post.content}</p>
               <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>{post.author} • {post.date}</span>
+                <span>{post.author} • {post.createdAt}</span>
                 <div className="flex items-center space-x-4">
-                  <span className="flex items-center"><Heart size={16} className="mr-1" /> {post.likes}</span>
-                  <span className="flex items-center"><MessageSquare size={16} className="mr-1" /> {post.comments}</span>
+                  <span className="flex items-center"><Heart size={16} className="mr-1" /> {post._count.likes}</span>
+                  <span className="flex items-center"><MessageSquare size={16} className="mr-1" /> {post._count.comment}</span>
                   <Bookmark size={16} className="cursor-pointer hover:text-blue-500 transition-colors" />
                 </div>
               </div>

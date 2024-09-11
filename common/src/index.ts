@@ -18,7 +18,8 @@ export const signupInput=z.object({
 
   export const createBlogInput=z.object({
     title:z.string(),
-    content:z.string()
+    content: z.string(),
+    tag: z.string(),    
   })
 
   export type CreateBlogInput=z.infer<typeof createBlogInput>
@@ -27,7 +28,8 @@ export const signupInput=z.object({
   export const updateBlogInput=z.object({
     title:z.string(),
     content:z.string(),
-    id:z.string()
+    id: z.string(),
+    tag:z.string(),
   })
 
   export type updateBlogInput=z.infer<typeof updateBlogInput>
