@@ -19,18 +19,12 @@ export const bookRouter = new Hono<
 }
 >()
 
-
-bookRouter.use("/*",async (c,next)=>{
-    const header=c.req.header("Authorization")||"";
-
-  if (header == "") {
+bookRouter.post("/", async (c, next) => {
+  const header = c.req.header("Authorization") || "";
+  if (header === "") {
     c.status(403);
-      return c.json({
-        message:"Empty header"
-      })
-    }
-  
-    // const token=header.split(" ")[1]
+    return c.json({error:"unauthorized",redirectUrl:'/signin'})
+}
   else{
     try{
 
@@ -49,9 +43,7 @@ bookRouter.use("/*",async (c,next)=>{
          error:"You are not logged in"
       })
     }
-  
   }
-   
   })
 
 
@@ -79,7 +71,8 @@ bookRouter.post('/',async (c) => {
         }
    })
    return c.json({
-    id:blog.id
+     id: blog.id,
+     message:"Blog successfully published"
    }) 
 
   })
@@ -187,46 +180,55 @@ bookRouter.get('/:id',async (c)=>{
     }
 });
 
-
   bookRouter.get('/',async (c)=>{
    const prisma=new PrismaClient({
     datasourceUrl:c.env.DATABASE_URL
    }).$extends(withAccelerate())
-
-    const blogs = await prisma.blog.findMany({
-      select: {
-        content: true,
-        title: true,
-        id: true,
-        author: {
+    try {
+      console.log('blos')
+      const blogs = await prisma.blog.findMany(
+        {
           select: {
-            name:true
-          }
-        },
-        tag: true,
-        createdAt: true,
-        comments: {
-          select: {
-            id: true,
             content: true,
-            createdAt: true,
-            user: {
+            title: true,
+            id: true,
+            author: {
               select: {
-                name: true
+                name:true
               }
-            }
-          }
-        },
-        _count: {
-          select: {
-            likes: true, 
-            comments:true,
-          }
-        }  
-        
-     }
-   });
-   return c.json({
-    blogs
-   })
+            },
+            tag: true,
+            createdAt: true,
+            comments: {
+              select: {
+                id: true,
+                content: true,
+                createdAt: true,
+                user: {
+                  select: {
+                    name: true
+                  }
+                }
+              }
+            },
+            _count: {
+              select: {
+                likes: true, 
+                comments:true,
+              }
+            }  
+            
+         }
+        }
+      );
+     
+      console.log(blogs);
+      return c.json({
+        blogs
+       })
+    }
+    catch (error) {
+      console.log(error);
+      throw error;
+    }   
   })
