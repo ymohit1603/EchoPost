@@ -1,70 +1,56 @@
-import  { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, ChevronDown, Heart, MessageSquare, Bookmark } from 'lucide-react';
 import NavBar from './NavBar';
 import fetchAllBlogs from '../hooks/fetchAllBlogs';
-import { useNavigate } from 'react-router-dom';
 
-// Mock data
-// const tags = ['Technology', 'Design', 'Programming', 'AI', 'Web Development', 'Data Science', 'UX/UI', 'Mobile Dev'];
-// const blogPosts = [
-//   { id: 1, title: 'Getting Started with React', excerpt: 'Learn the basics of React and start building your first app...', author: 'Jane Doe', date: '2024-09-01', readTime: '5 min read', tags: ['React', 'JavaScript'], likes: 120, comments: 15 },
-//   { id: 2, title: 'The Future of AI', excerpt: 'Exploring the potential impacts of artificial intelligence on various industries...', author: 'John Smith', date: '2024-08-28', readTime: '8 min read', tags: ['AI', 'Technology'], likes: 89, comments: 23 },
-//   { id: 3, title: 'Mastering CSS Grid', excerpt: 'A comprehensive guide to using CSS Grid for modern web layouts...', author: 'Emily Chen', date: '2024-08-25', readTime: '6 min read', tags: ['CSS', 'Web Development'], likes: 56, comments: 8 },
-//   { id: 4, title: 'The Rise of No-Code Platforms', excerpt: 'Discover how no-code platforms are democratizing software development...', author: 'Alex Johnson', date: '2024-08-22', readTime: '7 min read', tags: ['No-Code', 'Technology'], likes: 72, comments: 11 },
-// ];
-
-interface blogPostTypes{
-  id: string,
-  title: string,
-  content: string,
-  author: string,
-  createdAt: string,
-  tag: string,
-  _count:{likes: number,
-    comment:number,}
+interface BlogPostTypes {
+  id: string;
+  title: string;
+  content: string;
+  author: {
+    name:string
+  };
+  createdAt: string;
+  tag: string;
+  _count: {
+    likes: number;
+    comment: number;
+  };
 }
 
 const BlogPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
-  const [blogPosts, setBlogPosts] = useState<blogPostTypes[]>([]);
-  const [filteredPosts, setFilteredPosts] = useState(blogPosts);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (blogPosts) {
-      const filtered = blogPosts.filter(post => 
-        post.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
-        (selectedTag === '' || post.tag.includes(selectedTag))
-      );
-      setFilteredPosts(filtered);
-      
-    }
-  }, [searchTerm, selectedTag]);
-  
+  const [blogPosts, setBlogPosts] = useState<BlogPostTypes[]>([]);
+  const [filteredPosts, setFilteredPosts] = useState<BlogPostTypes[]>([]);
+
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const posts = await fetchAllBlogs(); 
-        if (posts.redirectUrl) {
-          navigate(posts.redirectUrl);
-          return;
-        }
-        setBlogPosts(posts.blogs); 
+        const posts = await fetchAllBlogs();
+        setBlogPosts(posts.blogs);
       } catch (error) {
-        console.error("Failed to fetch blog posts", error);
+        console.error('Failed to fetch blog posts', error);
       }
     };
-
     fetchPosts();
-  },[])
+  }, []);
+
+  useEffect(() => {
+    const filtered = blogPosts.filter((post) =>
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedTag === '' || post.tag.includes(selectedTag))
+    );
+    setFilteredPosts(filtered);
+  }, [blogPosts, searchTerm, selectedTag]);
+
+  const uniqueTags = Array.from(new Set(blogPosts.map((post) => post.tag)));
 
   return (
     <div className="min-h-screen bg-white">
-        <NavBar></NavBar>
+      <NavBar />
 
       <main className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        {/* <h1 className="text-5xl font-extrabold text-gray-900 mb-12 text-center">Explore Our Blog</h1> */}
-        
         <div className="mb-12 flex flex-col sm:flex-row gap-4">
           <div className="relative flex-grow">
             <input
@@ -76,57 +62,61 @@ const BlogPage = () => {
             />
             <Search className="absolute left-0 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
           </div>
+
           <div className="flex flex-wrap gap-2">
-            {blogPosts&&blogPosts.map((val:blogPostTypes) => (
+            {uniqueTags.map((tag,index) => (
               <button
-                key={val.tag}
+                key={index}
                 className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                  selectedTag === val.tag 
-                    ? 'bg-blue-500 text-white' 
+                  selectedTag === tag
+                    ? 'bg-blue-500 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
-                onClick={() => setSelectedTag(val.tag === selectedTag ? '' : val.tag)}
+                onClick={() => setSelectedTag(selectedTag === tag ? '' : tag)}
               >
-                {val.tag}
+                {tag}
               </button>
             ))}
           </div>
         </div>
-      
-        {filteredPosts&&filteredPosts.length > 0 && (
-          <div className="mb-16 group">
-            <div className="aspect-w-16 aspect-h-9 mb-6 bg-gray-100 rounded-lg overflow-hidden">
-              <img src="/api/placeholder/1600/900" alt="Featured post" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
-            </div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-2 group-hover:text-blue-500 transition-colors">{filteredPosts[0].title}</h2>
-            <p className="text-gray-600 mb-4">{filteredPosts[0].content}</p>
-            <div className="flex items-center text-sm text-gray-500">
-              <span>{filteredPosts[0].author}</span>
-              <span className="mx-2">•</span>
-              <span>{filteredPosts[0].createdAt}</span>
-            </div>
-          </div>
-        )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-          {filteredPosts&&filteredPosts.map((post) => (
-            <div key={post.id} className="group">
-              <div className="aspect-w-16 aspect-h-9 mb-4 bg-gray-100 rounded-lg overflow-hidden">
-                <img src={`/api/placeholder/800/450?text=${encodeURIComponent(post.title)}`} alt={post.title} className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-500 transition-colors">{post.title}</h3>
-              <p className="text-gray-600 mb-4 line-clamp-3">{post.content}</p>
-              <div className="flex items-center justify-between text-sm text-gray-500">
-                <span>{post.author} • {post.createdAt}</span>
-                <div className="flex items-center space-x-4">
-                  <span className="flex items-center"><Heart size={16} className="mr-1" /> {post._count.likes}</span>
-                  <span className="flex items-center"><MessageSquare size={16} className="mr-1" /> {post._count.comment}</span>
-                  <Bookmark size={16} className="cursor-pointer hover:text-blue-500 transition-colors" />
+        {filteredPosts.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+              {filteredPosts.map((post,index) => (
+                <div key={index} className="group">
+                  <div className="aspect-w-16 aspect-h-9 mb-4 bg-gray-100 rounded-lg overflow-hidden">
+                    <img
+                      src={`/api/placeholder/800/450?text=${encodeURIComponent(post.title)}`}
+                      alt={post.title}
+                      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-500 transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="text-gray-600 mb-4 line-clamp-3">{post.content}</p>
+                  <div className="flex items-center justify-between text-sm text-gray-500">
+                    <span>
+                      {post.author.name} • {new Date(post.createdAt).toLocaleDateString()}
+                    </span>
+                    <div className="flex items-center space-x-4">
+                      <span className="flex items-center">
+                        <Heart size={16} className="mr-1" /> {post._count.likes}
+                      </span>
+                      <span className="flex items-center">
+                        <MessageSquare size={16} className="mr-1" /> {post._count.comment}
+                      </span>
+                      <Bookmark size={16} className="cursor-pointer hover:text-blue-500 transition-colors" />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <p className="text-gray-500">No posts found.</p>
+        )}
 
         <div className="mt-12 text-center">
           <button className="px-6 py-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
@@ -138,7 +128,5 @@ const BlogPage = () => {
     </div>
   );
 };
-
-
 
 export default BlogPage;

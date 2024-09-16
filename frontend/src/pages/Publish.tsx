@@ -5,6 +5,7 @@ import { Chip, TextField, Button, Typography, ThemeProvider, createTheme, Alert 
 import { styled } from '@mui/system';
 import NavBar from '../components/NavBar';
 import PublishBlog from '../hooks/publishBlog';
+import { useNavigate } from 'react-router-dom';
 
 export type BlogPostType = {
   title: string;
@@ -22,6 +23,7 @@ const PublishButton = styled(Button)(({ theme }) => ({
 }));
 
 const Publish: React.FunctionComponent = () => {
+  const navigate = useNavigate();
   const [post, setPost] = useState<BlogPostType>({
     title: '',
     content: '',
@@ -62,7 +64,12 @@ const Publish: React.FunctionComponent = () => {
     console.log('Publishing post:', post);
   
     try {
-      await PublishBlog(post); 
+      const response = await PublishBlog(post); 
+      console.log("Response",response);
+      if (response.redirectUrl) {
+        navigate(response.redirectUrl);
+        return;
+      }
       <Alert severity='success'>Post published successfully!</Alert>
     } catch (error) {
       console.error('Error posting blog:', error);

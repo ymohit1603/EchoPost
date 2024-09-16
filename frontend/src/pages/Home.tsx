@@ -65,7 +65,7 @@ const LandingPage: React.FC = () => {
   // useEffect(() => {
   //   setIsLoaded(true);
   // }, []);
-
+  // const notAuthenticated=
 
   const fadeIn: Variants = {
     hidden: { opacity: 0, y: 50 },
@@ -110,7 +110,8 @@ const LandingPage: React.FC = () => {
             <p className="text-2xl text-gray-300 mb-8">Discover, Create, and Share Amazing Stories</p>
             <div className="flex justify-center gap-5">
             <motion.button
-              onClick={() => navigate('/publish')}
+                // onClick={() => notAuthenticated?navigate('/signin'):navigate('/signup')}
+                onClick={()=>navigate('/publish')}
               className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition duration-300"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
