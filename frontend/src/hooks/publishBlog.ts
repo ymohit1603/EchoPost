@@ -2,9 +2,12 @@ import axios from "axios";
 import {BlogPostType } from "../pages/Publish";
 
 
-const PublishBlog = async (data:BlogPostType) => {
+const PublishBlog = async (data: BlogPostType) => {
+    const BACKEND_URL=import.meta.env.VITE_BACKEND_URL
     try {
-        await axios.post(`${process.env.BACKEND_URL}/api/v1/book`,data)
+        const response = await axios.post(`${BACKEND_URL}/api/v1/book`, data)
+        return response.data;
+        
     }
     catch (error) {
         console.log(error);
